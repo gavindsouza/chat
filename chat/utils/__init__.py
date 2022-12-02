@@ -28,13 +28,9 @@ def validate_token(token):
     if not chat_profile:
         return [False, {}]
 
-    guest_user = frappe.get_doc('Chat Profile', str(chat_profile))
+    guest_user = frappe.get_cached_doc('Chat Profile', chat_profile)
 
-    if guest_user.ip_address != frappe.local.request_ip:
-        return [False, {}]
-
-    room = frappe.db.get_value(
-        'Chat Room', {'guest': guest_user.email}, ['name'])
+    room = frappe.db.get_value('Chat Room', {'guest': guest_user.name}, ['name'])
 
     guest_details = {
         'email': guest_user.email,
@@ -188,15 +184,18 @@ def is_user_allowed_in_room(room, email, user=None):
     Returns:
         bool: Whether user is allowed or not
     """
-    if user == 'Guest' and frappe.session.user != user:
-        return False
+    if user == 'Guest':
+        if frappe.session.user != user:
+            return False
 
     room_detail = get_room_detail(room)
-    if frappe.session.user == "Guest" and room_detail and room_detail.guest != email:
-        return False
 
-    if frappe.session.user != "Guest" and room_detail and room_detail.type != 'Guest' and email not in room_detail.members:
-        return False
+    if frappe.session.user == "Guest" and room_detail:
+        if room_detail.type != 'Guest' and email not in room_detail.members:
+            return False
+
+        if frappe.db.get_value("Chat Profile", room_detail.guest, "email") != email:
+            return False
 
     return True
 

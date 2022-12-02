@@ -61,7 +61,7 @@ def generate_guest_room(email: str, full_name: str, message: str) -> Tuple[str, 
 
 @frappe.whitelist(allow_guest=True)
 @validate_room_kwargs
-def get_guest_room(*, email: str, full_name: str, message: str) -> Dict[str, str]:
+def get_guest_room(*, email: str, full_name: str, message: str, token: str = None) -> Dict[str, str]:
     """Validate and setup profile & room for the guest user
 
     Args:

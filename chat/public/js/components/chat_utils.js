@@ -118,6 +118,7 @@ async function create_guest({ email, full_name, message }) {
       email: email,
       full_name: full_name,
       message: message,
+      token: localStorage.getItem('guest_token') || '',
     },
   });
   return await res.message;
