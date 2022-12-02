@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "field:email",
+ "autoname": "field:token",
  "creation": "2021-07-14 14:11:22.811197",
  "description": "Guest users for chat rooms.",
  "doctype": "DocType",
@@ -19,8 +19,7 @@
    "in_list_view": 1,
    "label": "Email",
    "options": "Email",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "guest_name",
@@ -35,7 +34,8 @@
    "label": "Token",
    "read_only": 1,
    "reqd": 1,
-   "set_only_once": 1
+   "set_only_once": 1,
+   "unique": 1
   },
   {
    "fieldname": "ip_address",
@@ -48,11 +48,10 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-22 12:27:31.506281",
+ "modified": "2022-12-02 18:11:11.451220",
  "modified_by": "Administrator",
  "module": "Frappe Chat",
  "name": "Chat Profile",
- "name_case": "Title Case",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
@@ -82,5 +81,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

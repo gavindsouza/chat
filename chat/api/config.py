@@ -15,7 +15,7 @@ def settings(token):
     config = {
         'socketio_port': frappe.conf.socketio_port,
         'user_email': frappe.session.user,
-        'is_admin': True if 'user_type' in frappe.session.data else False,
+        'is_admin': 'user_type' in frappe.session.data,
         'guest_title': ''.join(frappe.get_hooks('guest_title')),
     }
 

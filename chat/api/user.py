@@ -20,17 +20,17 @@ def validate_room_kwargs(function):
 
 def generate_guest_room(email: str, full_name: str, message: str) -> Tuple[str, str]:
     chat_operators = frappe.get_cached_doc("Chat Settings").chat_operators or []
-    profile_doc = frappe.get_doc(
-        {
-            "doctype": "Chat Profile",
-            "email": email,
-            "guest_name": full_name,
-        }
-    ).insert()
+
+    profile_doc = frappe.new_doc("Chat Profile")
+    profile_doc.email = email
+    profile_doc.guest_name = full_name
+    profile_doc.set_token()
+    profile_doc.insert()
+
     new_room = frappe.get_doc(
         {
             "doctype": "Chat Room",
-            "guest": email,
+            "guest": profile_doc.name,
             "room_name": full_name,
             "members": "Guest",
             "type": "Guest",
@@ -69,12 +69,15 @@ def get_guest_room(*, email: str, full_name: str, message: str) -> Dict[str, str
         full_name (str): Full name of guest.
         message (str): Message to be dropped.
     """
-    if not frappe.db.exists("Chat Profile", email):
-        room, token = generate_guest_room(email, full_name, message)
+    create_new_room = False
 
-    else:
+    if token:
         room = frappe.db.get_value("Chat Room", {"guest": email}, "name")
-        token = frappe.db.get_value("Chat Profile", email, "token")
+        existing_token = frappe.db.get_value("Chat Profile", email, "token")
+        create_new_room = (not room) or (existing_token != token)
+
+    if not token or create_new_room:
+        room, token = generate_guest_room(email, full_name, message)
 
     return {
         "guest_name": "Guest",
