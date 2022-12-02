@@ -20,7 +20,8 @@ def validate_token(token):
     """
     if not token:
         return [False, {}]
-    chat_profile = frappe.db.get_value({
+
+    chat_profile = frappe.db.exists({
         'doctype': 'Chat Profile',
         'token': token,
     })
